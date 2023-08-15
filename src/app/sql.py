@@ -8,7 +8,7 @@ class driver:
     # modify as needed.
     def __init__(self,
                  host="localhost",
-                 database="food_project",
+                 database="POS_IQ",
                  username="root",
                  password=""):
         self.conn = mysql.connector.connect(
@@ -24,9 +24,17 @@ class driver:
     #   for row in rows:
     #       row['first_name']
     #       ... do operations here ...
-    def query(self, query_string: str):
+    def execute(self, query, params=None):
+        """Execute a query that does not return a result set."""
+        cursor = self.conn.cursor()
+        cursor.execute(query, params)
+        self.conn.commit()
+        cursor.close()
+
+    def fetch(self, query, params=None):
+        """Execute a query that returns a result set."""
         cursor = self.conn.cursor(dictionary=True)
-        cursor.execute(query_string)
+        cursor.execute(query, params)
         rows = cursor.fetchall()
         cursor.close()
         return rows
@@ -36,7 +44,3 @@ class driver:
     def get_connection(self):
         return self.conn
 
-    # overloaded destructor
-    def __del__(self):
-        if self.conn.is_connected():
-            self.conn.close()
