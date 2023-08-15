@@ -2,21 +2,24 @@ from flask import Flask, render_template, request
 
 import sql
 
+# Instantiating global variables
+# the db_driver is a sql driver wrapper class
+# visit src/app/sql.py for more details.
 app: Flask = Flask(__name__)
 db_driver = sql.driver()
 
-# This is the index.html file being rendered.
+
+# Here, we render our index.html
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
-# This is the endpoint where we accept POST requests from the order form
+# This is the endpoint where we accept POST requests from the order form in our index.html
 @app.route('/submit_order', methods=['POST'])
 def order_now():
     name = request.form.get('customerName')
     items = request.form.getlist('item')
-
 
     # Execute the query using the database driver
     try:
@@ -44,5 +47,6 @@ def order_now():
         return f"<h1>Error submitting order: {str(e)}</h1>"
 
 
+# run our flask instance
 if __name__ == "__main__":
     app.run()
